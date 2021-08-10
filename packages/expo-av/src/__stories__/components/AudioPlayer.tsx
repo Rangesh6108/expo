@@ -1,7 +1,9 @@
+import { spacing, shadows, borderRadius } from '@expo/styleguide-native';
 import { Asset } from 'expo-asset';
 import { Audio, AVPlaybackStatus } from 'expo-av';
 import { Playback } from 'expo-av/build/AV';
 import * as React from 'react';
+import { StyleSheet, View } from 'react-native';
 
 import { ProgressScrubber } from './PlayerControls';
 
@@ -68,9 +70,27 @@ export function AudioPlayer({ renderControls, source, ...props }: AudioPlayerPro
   }
 
   return (
-    <>
-      <ProgressScrubber status={status} player={soundRef} />
-      {renderControls({ player: soundRef, status })}
-    </>
+    <View style={styles.container}>
+      <View style={styles.progressContainer}>
+        <ProgressScrubber status={status} player={soundRef} />
+      </View>
+
+      <View style={styles.controlsContainer}>{renderControls({ player: soundRef, status })}</View>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'white',
+    ...shadows.small,
+    borderRadius: borderRadius.large,
+  },
+  progressContainer: {
+    padding: spacing[2],
+  },
+  controlsContainer: {
+    paddingVertical: spacing[2],
+    paddingHorizontal: spacing[4],
+  },
+});

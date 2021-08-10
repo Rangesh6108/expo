@@ -1,4 +1,3 @@
-import {} from 'expo-av';
 import { Container } from 'expo-stories/shared/components';
 import * as React from 'react';
 

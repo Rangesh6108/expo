@@ -5,7 +5,6 @@ import * as React from 'react';
 import {
   LoopingControls,
   PlaybackRateControls,
-  PlayButton,
   PlayPauseStopControls,
   SkipControls,
   VolumeControls,
@@ -21,11 +20,14 @@ export function VideoSource() {
       <Container labelTop="Remote Video Source">
         <VideoPlayer
           source={{ uri: remoteUrl }}
-          renderControls={props => <PlayButton {...props} />}
+          renderControls={props => <PlayPauseStopControls {...props} />}
         />
       </Container>
       <Container labelTop="Local Video Source">
-        <VideoPlayer source={localVideo} renderControls={props => <PlayButton {...props} />} />
+        <VideoPlayer
+          source={localVideo}
+          renderControls={props => <PlayPauseStopControls {...props} />}
+        />
       </Container>
     </>
   );

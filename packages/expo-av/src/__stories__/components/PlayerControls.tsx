@@ -1,8 +1,10 @@
-import { spacing, lightTheme } from '@expo/styleguide-native';
+import { spacing, lightTheme, LogsIcon, iconSize } from '@expo/styleguide-native';
 import Ionicons from '@expo/vector-icons/build/Ionicons';
 import Slider from '@react-native-community/slider';
-import { AVPlaybackStatus, Video } from 'expo-av';
+import { AVPlaybackStatus } from 'expo-av';
 import { Playback } from 'expo-av/build/AV';
+import { Toggle } from 'expo-stories/shared/components';
+import { Json } from 'expo-stories/shared/components/Json';
 import * as React from 'react';
 import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 
@@ -11,15 +13,34 @@ type PlayerControlsProps = {
   status: Extract<AVPlaybackStatus, { isLoaded: true }>;
 };
 
+function ToggleStatusLogs({ status, children }) {
+  return (
+    <Toggle>
+      {children}
+      <Toggle.Area>
+        <Json json={status} />
+      </Toggle.Area>
+    </Toggle>
+  );
+}
+
 export function PlayPauseStopControls({ player, status }: PlayerControlsProps) {
   return (
-    <View style={styles.controlsContainer}>
-      <PlayButton player={player} status={status} />
+    <ToggleStatusLogs status={status}>
+      <View style={styles.controlsContainer}>
+        <PlayButton player={player} status={status} />
 
-      <TouchableOpacity style={styles.buttonContainer} onPress={() => player.stopAsync()}>
-        <Ionicons name="ios-stop" size={28} color={lightTheme.button.primary.background} />
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity style={styles.buttonContainer} onPress={() => player.stopAsync()}>
+          <Ionicons name="ios-stop" size={28} color={lightTheme.button.primary.background} />
+        </TouchableOpacity>
+
+        <View style={{ flex: 1 }} />
+
+        <Toggle.Button>
+          <LogsIcon size={iconSize.large} color={lightTheme.button.primary.background} />
+        </Toggle.Button>
+      </View>
+    </ToggleStatusLogs>
   );
 }
 
@@ -29,17 +50,29 @@ export function SkipControls({ player, status }: PlayerControlsProps) {
   }
 
   return (
-    <View style={styles.controlsContainer}>
-      <TouchableOpacity style={styles.buttonContainer} onPress={() => skipTo(-1500)}>
-        <Ionicons name="play-skip-back" size={28} color={lightTheme.button.primary.background} />
-      </TouchableOpacity>
+    <ToggleStatusLogs status={status}>
+      <View style={styles.controlsContainer}>
+        <TouchableOpacity style={styles.buttonContainer} onPress={() => skipTo(-1500)}>
+          <Ionicons name="play-skip-back" size={28} color={lightTheme.button.primary.background} />
+        </TouchableOpacity>
 
-      <PlayButton player={player} status={status} />
+        <PlayButton player={player} status={status} />
 
-      <TouchableOpacity style={styles.buttonContainer} onPress={() => skipTo(1500)}>
-        <Ionicons name="play-skip-forward" size={28} color={lightTheme.button.primary.background} />
-      </TouchableOpacity>
-    </View>
+        <TouchableOpacity style={styles.buttonContainer} onPress={() => skipTo(1500)}>
+          <Ionicons
+            name="play-skip-forward"
+            size={28}
+            color={lightTheme.button.primary.background}
+          />
+        </TouchableOpacity>
+
+        <View style={{ flex: 1 }} />
+
+        <Toggle.Button>
+          <LogsIcon size={iconSize.large} color={lightTheme.button.primary.background} />
+        </Toggle.Button>
+      </View>
+    </ToggleStatusLogs>
   );
 }
 
@@ -60,7 +93,7 @@ export function PlaybackRateControls({ player, status }: PlayerControlsProps) {
   }
 
   return (
-    <>
+    <ToggleStatusLogs status={status}>
       <View style={styles.controlsContainer}>
         {renderPlaybackRate(0.5)}
         {renderPlaybackRate(1)}
@@ -95,33 +128,47 @@ export function PlaybackRateControls({ player, status }: PlayerControlsProps) {
         <View style={{ width: spacing[4] }} />
 
         <PlayButton player={player} status={status} />
+
+        <View style={{ flex: 1 }} />
+
+        <Toggle.Button>
+          <LogsIcon size={iconSize.large} color={lightTheme.button.primary.background} />
+        </Toggle.Button>
       </View>
 
       <Text style={[styles.buttonLabel, styles.activeButtonLabel]}>
         {formatTime(status.positionMillis / 1000)} / {formatTime(status.durationMillis / 1000)}
       </Text>
-    </>
+    </ToggleStatusLogs>
   );
 }
 
 export function VolumeControls({ player, status }: PlayerControlsProps) {
   return (
-    <View style={styles.controlsContainer}>
-      <VolumeSlider
-        volume={status.volume}
-        onValueChanged={async ({ volume, isMuted }) => {
-          await player.setVolumeAsync(volume);
-          await player.setIsMutedAsync(isMuted);
-        }}
-        color={lightTheme.button.primary.background}
-        style={{ width: 200 }}
-        isMuted={status.isMuted}
-      />
+    <ToggleStatusLogs status={status}>
+      <View style={styles.controlsContainer}>
+        <VolumeSlider
+          volume={status.volume}
+          onValueChanged={async ({ volume, isMuted }) => {
+            await player.setVolumeAsync(volume);
+            await player.setIsMutedAsync(isMuted);
+          }}
+          color={lightTheme.button.primary.background}
+          style={{ width: 200 }}
+          isMuted={status.isMuted}
+        />
 
-      <View style={{ width: spacing[4] }} />
+        <View style={{ width: spacing[4] }} />
 
-      <PlayButton player={player} status={status} />
-    </View>
+        <PlayButton player={player} status={status} />
+
+        <View style={{ flex: 1 }} />
+
+        <Toggle.Button>
+          <LogsIcon size={iconSize.large} color={lightTheme.button.primary.background} />
+        </Toggle.Button>
+      </View>
+    </ToggleStatusLogs>
   );
 }
 
@@ -133,7 +180,7 @@ export function LoopingControls({ player, status }: PlayerControlsProps) {
   }
 
   return (
-    <>
+    <ToggleStatusLogs status={status}>
       <View style={styles.controlsContainer}>
         <TouchableOpacity
           onPress={() => {
@@ -165,8 +212,14 @@ export function LoopingControls({ player, status }: PlayerControlsProps) {
             color={lightTheme.button.primary.background}
           />
         </TouchableOpacity>
+
+        <View style={{ flex: 1 }} />
+
+        <Toggle.Button>
+          <LogsIcon size={iconSize.large} color={lightTheme.button.primary.background} />
+        </Toggle.Button>
       </View>
-    </>
+    </ToggleStatusLogs>
   );
 }
 
@@ -210,8 +263,6 @@ export function VolumeSlider({
     return volume > 0.5 ? 'volume-high' : 'volume-low';
   }, [isMutedActive, volume]);
 
-  const height = 36;
-
   const onChange = React.useCallback(
     (value: number) => {
       onValueChanged({ isMuted: value <= 0, volume: value });
@@ -237,7 +288,7 @@ export function VolumeSlider({
       <Slider
         value={isMutedActive ? 0 : volume}
         maximumValue={1}
-        style={{ height, flex: 1 }}
+        style={styles.slider}
         thumbTintColor={color}
         minimumTrackTintColor={color}
         onSlidingComplete={onChange}
