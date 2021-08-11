@@ -48,4 +48,4 @@ When the Expo Go app is finished installing, open it up. If you created an accou
 
 ## Up next
 
-Now that `expo-cli` and the Expo Go app are installed, [let's create a new app and write some code](../get-started/create-a-new-app.md).
+Now that `expo-cli` and the Expo Go app are installed, [let's create a new app and write some code](../get-started/create-a-new-app.md) .
